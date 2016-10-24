@@ -1,3 +1,6 @@
+% Robot Property
+%
+
 function robot=robotproperty(id)
 robot.name = id;
 switch id
@@ -38,7 +41,7 @@ switch id
         robot.cap{6}.p=[0.05 0.17;0 0; 0.135 0.135];
         robot.cap{6}.r=0;
         
-        load(['figure\LRMate200iDCapsules.mat']);
+        load('figure\LRMate200iDCapsules.mat');
         robot.boundary=RoBoundary;
         robot.boundary{7} = [];
 
@@ -90,7 +93,7 @@ switch id
         robot.delta_t=0.5;
         %The length of each links and DH parameter and base
         robot.l=[0.65;0.77;0.1;0.74;0;0.1];
-        robot.DH=[0.5, 0.65, 0.15, 1.5708;
+        robot.DH=[0, 0.65, 0.15, 1.5708;
             1.5708, 0, 0.77, 0;
             0, 0, 0.1, 1.5708;
             0, 0.74, 0, -1.5708;
@@ -167,5 +170,3 @@ robot.const.P3=[zeros(robot.nlink) zeros(robot.nlink);zeros(robot.nlink) eye(rob
 %For collision check
 robot.profile={};
 end
-
-

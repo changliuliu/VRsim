@@ -33,17 +33,19 @@ end
 % Draw figures
 DrawHR_Skeleton;
 
+Pos = [0;1.5708;0;0;-pi/2;-pi];
+
 %% begin testing
 if MODE == 'MOUSES'
     set(fighandle(1), 'currentaxes', fighandle(2))
 end
 set(text1handle,'string','Test runing...')
 
-ReferenceTrajectory;
-
+%ReferenceTrajectory;
+robot.goal = [];
 t=1;
 while true
-
+    robot.goal(:,t) = Pos;
     robot.obs.HuCap{t,:}=HuCap;
     [status,robot]=robotmove(t,robot);
     
@@ -54,7 +56,6 @@ while true
     end
     robot.handle=DrawCapsule(robot.boundary,robot.profile{t+1}.M,0.8,[0,1,0]);
 
-    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % update the agent position   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -62,7 +63,7 @@ while true
         case 'MOUSES'
             cursor_pos_current = get(0,'PointerLocation');
             u = (cursor_pos_current - Center)./(URCorner - Center).*init_pos; % normalized
-            
+            zoffset = 0;
         case 'KINECT'
             newz = y;
             y = z;
@@ -82,11 +83,12 @@ while true
             HuCap{7}.p=[x(17),x(18);y(17),y(18);z(17),z(18)]; %knee right
             HuCap{8}.p=[x(18),x(19);y(18),y(19);z(18),z(19)]; %knee right-ankle right
             u=[1 1];
+            zoffset = -min(z);
     end
     xref=HuCap{1}.p(1,1); yref=HuCap{1}.p(2,1);
     agent.offset(:,t)=[u';0];
     for i=1:10
-        HuCap{i}.p=HuCap{i}.p-[xref xref;yref yref;0 0]+[[u';0] [u';0]];
+        HuCap{i}.p=HuCap{i}.p-[xref xref;yref yref;0 0]+[[u';zoffset] [u';zoffset]];
         refreshdata([Hhandle(i)],'caller')
     end
 
@@ -100,4 +102,4 @@ while true
 
 end
 
-set(text1handle,'string','Test ended')
+set(text1handle,'string','Test ended');

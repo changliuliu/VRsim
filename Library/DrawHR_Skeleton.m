@@ -1,13 +1,6 @@
 if MODE == 'MOUSES'
     set(fighandle(1),'currentaxes',fighandle(2))
 end
-% robot.handle=zeros(1,6);
-% for i=1:6
-%     robot.handle(i)=plot3(robot.pos{1,i}.p(1,:),robot.pos{1,i}.p(2,:),robot.pos{1,i}.p(3,:),'.-','LineWidth',10,'markersize',50);
-%     set(robot.handle(i),'XDataSource','robot.pos{t,i}.p(1,:)');
-%     set(robot.handle(i),'YDataSource','robot.pos{t,i}.p(2,:)');
-%     set(robot.handle(i),'ZDataSource','robot.pos{t,i}.p(3,:)');
-% end
 
 HuCap=HumanCap();
 xref=HuCap{1}.p(1,1); yref=HuCap{1}.p(2,1);
