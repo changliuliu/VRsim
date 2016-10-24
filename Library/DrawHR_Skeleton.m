@@ -1,4 +1,6 @@
-% set(fighandle(1),'currentaxes',fighandle(2))
+if MODE == 'MOUSES'
+    set(fighandle(1),'currentaxes',fighandle(2))
+end
 % robot.handle=zeros(1,6);
 % for i=1:6
 %     robot.handle(i)=plot3(robot.pos{1,i}.p(1,:),robot.pos{1,i}.p(2,:),robot.pos{1,i}.p(3,:),'.-','LineWidth',10,'markersize',50);
