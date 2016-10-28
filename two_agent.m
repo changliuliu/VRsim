@@ -11,7 +11,7 @@ addpath('Library')
 addpath('figure')
 
 ROBOT = 'M16iB'; %M16iB or LRMate200iD
-MODE = 'MOUSES'; %KINECT or MOUSES
+MODE = 'KINECT'; %KINECT or MOUSES
 robot=robotproperty(ROBOT);
 agent=agentproperty(1);
 
@@ -21,7 +21,7 @@ init_pos=[1,1];
 
 % Intialize figure
 if MODE == 'KINECT'
-    fighandle=initialize_figure(2,[-2,3],[-2,2],[0,2],[1,-2,0.2]);
+    fighandle=initialize_figure(2,[-2,4],[-2,2],[0,2],[1,-2,0.2]);
     text1handle = text(0,max(ylim)+1,max(zlim)+0.5,'Please calibrate...');
 else
     fighandle=initialize_figure_interact(2,[-2,3],[-2,2],[0,2],[1,-2,0.2]);
@@ -68,6 +68,9 @@ while true
             newz = y;
             y = z;
             z = newz;
+            newx = y;
+            y = x;
+            x = newx;
             HuCap{1}.p=[x(4),x(4);y(4),y(4);z(4),z(4)];       %head-head
             HuCap{2}.p=[x(3),x(1);y(3),y(1);z(3),z(1)];       %shoulder center-hip center
             %[x(3),x(5);y(3),y(5);z(3),z(5)]       %shoulder center-shoulder left
@@ -80,15 +83,19 @@ while true
             HuCap{9}.p=[x(13),x(14);y(13),y(14);z(13),z(14)]; %hip left-knee left
             HuCap{10}.p=[x(14),x(15);y(14),y(15);z(14),z(15)]; %knee left-ankle left
             %[x(1),x(17);y(1),y(17);z(1),z(17)]    %hip center-hip right
-            HuCap{7}.p=[x(17),x(18);y(17),y(18);z(17),z(18)]; %knee right
+            HuCap{7}.p=[x(17),x(18);y(17),y(18);z(17),z(18)]; %hip right-knee right
             HuCap{8}.p=[x(18),x(19);y(18),y(19);z(18),z(19)]; %knee right-ankle right
-            u=[1 1];
+            u=[0 0];
             zoffset = -min(z);
     end
     xref=HuCap{1}.p(1,1); yref=HuCap{1}.p(2,1);
     agent.offset(:,t)=[u';0];
     for i=1:10
-        HuCap{i}.p=HuCap{i}.p-[xref xref;yref yref;0 0]+[[u';zoffset] [u';zoffset]];
+        if MODE == 'MOUSES'
+            HuCap{i}.p=HuCap{i}.p+[[u';zoffset] [u';zoffset]]-[xref xref;yref yref;0 0];
+        else
+            HuCap{i}.p=HuCap{i}.p+[[u';zoffset] [u';zoffset]];
+        end
         refreshdata([Hhandle(i)],'caller')
     end
 
