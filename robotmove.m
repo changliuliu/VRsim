@@ -50,7 +50,6 @@ D=robot.Ac*robot.wx(:,end)+robot.Bc*H*robot.x(robot.nlink+1:robot.nlink*2,t)-x_H
 [thres,vet]=safety(D,BJ);
 robot.profile{t}.ssa=0;
 for i=1:1
-    
     u=robot.u(1:robot.nlink,t);
     if (vet*u)<thres
         change=thres-vet*u;
