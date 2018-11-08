@@ -5,9 +5,12 @@ tic;
 [J,H]=JacobiDiff(robot.DH,robot.nlink,robot.pos{t,robot.nlink}.p(:,2),robot.x(robot.nlink+1:robot.nlink*2,t));
 
 %desired control
-%U=robot.goal(7:9,t)-1*eye(3)*(robot.wx(1:3,t)-robot.goal(1:3,t))-1.5*eye(3)*(robot.wx(4:6,t)-robot.goal(4:6,t));
-%robot.u(:,t)=pinv(J)*[U-H*robot.x(robot.nlink+1:robot.nlink*2,t);0;0;0];
-robot.u(:,t)=0.5*(mod(robot.goal(:,t)-robot.x(1:robot.nlink,t)+pi,2*pi)-pi)-robot.x(robot.nlink+1:robot.nlink*2,t);
+if isfield(robot,'refTraj')
+    U=robot.goal(7:9,t)-1*eye(3)*(robot.wx(1:3,t)-robot.goal(1:3,t))-1.5*eye(3)*(robot.wx(4:6,t)-robot.goal(4:6,t));
+    robot.u(:,t)=pinv(J)*[U-H*robot.x(robot.nlink+1:robot.nlink*2,t);0;0;0];
+else
+    robot.u(:,t)=0.5*(mod(robot.goal(:,t)-robot.x(1:robot.nlink,t)+pi,2*pi)-pi)-robot.x(robot.nlink+1:robot.nlink*2,t);
+end
 robot.profile{t}.optcontltime=toc;
 
 tic;
@@ -50,6 +53,7 @@ D=robot.Ac*robot.wx(:,end)+robot.Bc*H*robot.x(robot.nlink+1:robot.nlink*2,t)-x_H
 [thres,vet]=safety(D,BJ);
 robot.profile{t}.ssa=0;
 for i=1:1
+    
     u=robot.u(1:robot.nlink,t);
     if (vet*u)<thres
         change=thres-vet*u;
@@ -74,7 +78,7 @@ for i=1:robot.nlink
 end
 
 [newpos,M]=CapPos(robot.base,robot.DH,robot.cap);
-for i=1:robot.nlink;
+for i=1:robot.nlink
     robot.pos{t+1,i}=newpos{i};
 end
 robot.profile{t+1}.M=M;
